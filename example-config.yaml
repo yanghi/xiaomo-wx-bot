@@ -1,0 +1,4 @@
+# 在同层级新建 config.yaml, 拷贝以下内容并按实际填写
+
+openai:
+  API_KEY: 'your-api-key'
