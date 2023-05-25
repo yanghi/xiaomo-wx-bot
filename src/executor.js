@@ -1,11 +1,11 @@
-let slient = true
+let slient = false
 
 
 async function executeOrder(order, talker, ...contacts) {
-  if (order == 'slient') {
+  if (order == 'mute') {
     slient = true
     talker.say('好的,再见', ...contacts)
-  } else if (order == '') {
+  } else if (order == 'unmute') {
     slient = false
     talker.say(`已解除禁言`)
   } else {
@@ -17,20 +17,20 @@ async function executeOrder(order, talker, ...contacts) {
 
 /**
  * 
+ * @param {ReturnType<import('wechaty').WechatyBuilder['build']>} wechaty 
  * @param {import('wechaty').Message} message 
  * @param {*} action 
  * @returns 
  */
-export async function executeMessageAction(message, actions = {}) {
-  if (slient) return
-
-  const text = message.text()
+export async function executeMessageAction(wechaty, message, actions = {}) {
 
   const talker = message.talker()
   const isText = message.type() === wechaty.Message.Type.Text // 消息类型是否为文本
   if (talker.self() || !isText || (talker.name() === '微信团队' && isText)) {
     return
   }
+
+  const text = message.text()
 
   const room = message.room()
 
@@ -44,7 +44,9 @@ export async function executeMessageAction(message, actions = {}) {
 
       if (order && await executeOrder(order, room, talker)) {
         console.log(`execute order: ${order}`)
+        
       } else {
+        if (!order && slient) return
         actions.room && await actions.room(message)
       }
     }

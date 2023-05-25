@@ -57,19 +57,16 @@ wechaty
   .on('login', user => console.log(`User ${user} logged in`))
   .on('message', async (message) => {
 
-    await executeMessageAction({
+    await executeMessageAction(wechaty, message, {
       room: async () => {
         await answserQuestion(message.room(), message.text(), 
-        
-        
         
         )
       },
       person: async () => {
-        await answserQuestion(talker, message.text())
+        await answserQuestion(message.talker(), message.text())
       }
     })
-   
 
   })
 
